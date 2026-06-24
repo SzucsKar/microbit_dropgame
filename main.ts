@@ -14,6 +14,29 @@ function plotPlayer() {
     led.plot(playerX, playerY)
 }
 
+function flashTopRow() {
+    for (let i = 0; i < 3; i++) {
+        for (let x = 0; x <= 4; x++) {
+            led.plot(x, 0)
+        }
+        basic.pause(150)
+        for (let x = 0; x <= 4; x++) {
+            led.unplot(x, 0)
+        }
+        basic.pause(150)
+    }
+}
+
+function showAttackerResult(caught: boolean) {
+    if (caught) {
+        basic.showString("CAUGHT")
+    } else {
+        flashTopRow()
+        basic.showString("MISSED")
+    }
+    plotPlayer()
+}
+
 function moveLeft() {
     if (playerX > 0) {
         led.unplot(playerX, playerY)
@@ -95,15 +118,18 @@ input.onGesture(Gesture.TiltRight, function () {
 
 radio.onReceivedValue(function (name, value) {
     if (gameStarted && role === "defender" && name === "drop") {
+        let caught = false
         for (let fallY = 0; fallY <= 4; fallY++) {
             basic.clearScreen()
             led.plot(playerX, playerY)
             led.plot(value, fallY)
             if (fallY === 4) {
                 if (value === playerX) {
+                    caught = true
                     defenderCaught += 1
                     music.playTone(Note.C, music.beat(BeatFraction.Quarter))
                 } else {
+                    caught = false
                     defenderMissed += 1
                     music.playTone(Note.C, music.beat(BeatFraction.Eighth))
                     music.playTone(Note.G, music.beat(BeatFraction.Eighth))
@@ -111,9 +137,20 @@ radio.onReceivedValue(function (name, value) {
             }
             basic.pause(300)
         }
+        if (caught) {
+            radio.sendValue("caught", 1)
+        } else {
+            radio.sendValue("missed", 1)
+        }
         showScore()
     }
-})
+
+    if (gameStarted && role === "attacker") {
+        if (name === "caught") {
+            showAttackerResult(true)
+        } else if (name === "missed") {
+            showAttackerResult(false)
+        }
 
 showInstructions()
 plotPlayer()
