@@ -29,10 +29,10 @@ function flashTopRow() {
 
 function showAttackerResult(caught: boolean) {
     if (caught) {
-        basic.showString("CAUGHT")
+        
     } else {
         flashTopRow()
-        basic.showString("MISSED")
+        
     }
     plotPlayer()
 }
