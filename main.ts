@@ -151,6 +151,8 @@ radio.onReceivedValue(function (name, value) {
         } else if (name === "missed") {
             showAttackerResult(false)
         }
+    }
+})
 
 showInstructions()
 plotPlayer()
