@@ -17,7 +17,7 @@ function plotPlayer() {
 function moveLeft() {
     if (playerX > 0) {
         led.unplot(playerX, playerY)
-        playerX -= 1
+        playerX += 0 - 1
         led.plot(playerX, playerY)
     }
 }
